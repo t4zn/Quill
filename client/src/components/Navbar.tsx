@@ -61,7 +61,7 @@ export default function Navbar() {
               data-testid="link-home"
             >
               <img 
-                src="/src/favicon.ico" 
+                src="/favicon.ico" 
                 alt="Quill Logo" 
                 className="w-6 h-6"
               />
