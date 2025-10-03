@@ -37,7 +37,7 @@ export default function Dashboard() {
       <Navbar />
       <DevHeader />
       
-      <div className="pt-24 pb-16">
+      <div className="pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Dashboard</h1>

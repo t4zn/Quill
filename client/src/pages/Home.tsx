@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import BlogCard from "@/components/BlogCard";
+import DevHeader from "@/components/DevHeader";
 import Footer from "@/components/Footer";
 import AdSensePlaceholder from "@/components/AdSensePlaceholder";
 import { Sparkles, Clock, Zap } from "lucide-react";
@@ -60,7 +61,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen pt-28">
+      <DevHeader />
       <Hero />
 
       <section className="py-16 md:py-24 bg-gradient-to-b from-card/50 to-background">

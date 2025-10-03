@@ -62,7 +62,7 @@ AI content generation is a powerful tool that can significantly improve your wri
       <Navbar />
       <DevHeader />
       
-      <article className="pt-24 pb-16">
+      <article className="pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-8">

@@ -10,7 +10,7 @@ export default function Auth() {
       <Navbar />
       <DevHeader />
       
-      <div className="flex-1 flex items-center justify-center pt-24 pb-16">
+      <div className="flex-1 flex items-center justify-center pt-28 pb-16">
         <div className="w-full max-w-md px-4">
           <ServerStatus />
           <AuthForm />
