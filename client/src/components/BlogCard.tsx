@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface BlogCardProps {
   id: string;
@@ -27,18 +28,27 @@ export default function BlogCard({
 }: BlogCardProps) {
   return (
     <Link href={`/blog/${id}`}>
-      <article className="group cursor-pointer" data-testid={`card-blog-${id}`}>
-        <div className="flex flex-col md:flex-row gap-6 p-6 rounded-lg hover-elevate active-elevate-2 transition-all">
+      <motion.article 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        whileHover={{ y: -4 }}
+        className="group cursor-pointer" 
+        data-testid={`card-blog-${id}`}
+      >
+        <div className="flex flex-col md:flex-row gap-6 p-6 rounded-xl hover-elevate active-elevate-2 transition-all border border-transparent hover:border-border/50">
           {imageUrl && (
             <div className="relative md:w-72 w-full h-48 md:h-auto flex-shrink-0 overflow-hidden rounded-lg">
-              <img
+              <motion.img
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
                 src={imageUrl}
                 alt={title}
-                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                className="w-full h-full object-cover"
                 data-testid={`img-blog-${id}`}
               />
               {isAiGenerated && (
-                <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground border-accent-border" data-testid={`badge-ai-${id}`}>
+                <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground border-accent-border shadow-lg" data-testid={`badge-ai-${id}`}>
                   <Sparkles className="h-3 w-3 mr-1" />
                   AI Generated
                 </Badge>
@@ -51,11 +61,11 @@ export default function BlogCard({
               <Badge variant="secondary" data-testid={`badge-category-${id}`}>{category}</Badge>
             </div>
             
-            <h3 className="text-2xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2" data-testid={`title-blog-${id}`}>
+            <h3 className="text-2xl font-semibold mb-3 group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-accent group-hover:bg-clip-text group-hover:text-transparent transition-all line-clamp-2" data-testid={`title-blog-${id}`}>
               {title}
             </h3>
             
-            <p className="text-muted-foreground mb-4 line-clamp-2" data-testid={`excerpt-blog-${id}`}>
+            <p className="text-muted-foreground mb-4 line-clamp-2 leading-relaxed" data-testid={`excerpt-blog-${id}`}>
               {excerpt}
             </p>
             
@@ -72,7 +82,7 @@ export default function BlogCard({
             </div>
           </div>
         </div>
-      </article>
+      </motion.article>
     </Link>
   );
 }

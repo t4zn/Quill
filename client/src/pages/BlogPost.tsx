@@ -1,9 +1,11 @@
 import { useRoute } from "wouter";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSensePlaceholder from "@/components/AdSensePlaceholder";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, User, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 export default function BlogPost() {
   const [, params] = useRoute("/blog/:id");
@@ -59,49 +61,83 @@ AI content generation is a powerful tool that can significantly improve your wri
       <Navbar />
       
       <article className="pt-24 pb-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <Badge variant="secondary" className="mb-4">{blog.category}</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6" data-testid="text-blog-title">
-              {blog.title}
-            </h1>
-            
-            <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8">
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span className="font-medium text-foreground">{blog.author}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>{blog.date}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                <span>{blog.readTime}</span>
-              </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-8">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
+              >
+                <Badge variant="secondary" className="mb-4">{blog.category}</Badge>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6" data-testid="text-blog-title">
+                  {blog.title}
+                </h1>
+                
+                <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="font-medium text-foreground">{blog.author}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>{blog.date}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    <span>{blog.readTime}</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {blog.imageUrl && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-12 rounded-lg overflow-hidden"
+                >
+                  <img
+                    src={blog.imageUrl}
+                    alt={blog.title}
+                    className="w-full h-auto"
+                    data-testid="img-blog-featured"
+                  />
+                </motion.div>
+              )}
+
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="prose prose-lg max-w-none mb-12" 
+                data-testid="content-blog-post"
+              >
+                <p className="whitespace-pre-wrap leading-relaxed">{blog.content}</p>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="border-t pt-8"
+              >
+                <Button variant="outline" data-testid="button-share">
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share Article
+                </Button>
+              </motion.div>
             </div>
-          </div>
 
-          {blog.imageUrl && (
-            <div className="mb-12 rounded-lg overflow-hidden">
-              <img
-                src={blog.imageUrl}
-                alt={blog.title}
-                className="w-full h-auto"
-                data-testid="img-blog-featured"
-              />
-            </div>
-          )}
-
-          <div className="prose prose-lg max-w-none mb-12" data-testid="content-blog-post">
-            <p className="whitespace-pre-wrap leading-relaxed">{blog.content}</p>
-          </div>
-
-          <div className="border-t pt-8">
-            <Button variant="outline" data-testid="button-share">
-              <Share2 className="h-4 w-4 mr-2" />
-              Share Article
-            </Button>
+            <motion.aside 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="lg:col-span-4 space-y-6"
+            >
+              <AdSensePlaceholder type="sidebar" />
+              <AdSensePlaceholder type="square" />
+            </motion.aside>
           </div>
         </div>
       </article>

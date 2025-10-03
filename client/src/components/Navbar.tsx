@@ -2,10 +2,12 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, PenSquare } from "lucide-react";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const [location] = useLocation();
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -14,6 +16,12 @@ export default function Navbar() {
     if (initialTheme === "dark") {
       document.documentElement.classList.add("dark");
     }
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const toggleTheme = () => {
@@ -28,52 +36,61 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-lg">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-lg transition-all ${
+        scrolled ? "shadow-md" : ""
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/">
-            <a className="text-xl font-bold tracking-tight hover-elevate active-elevate-2 px-3 py-2 rounded-lg" data-testid="link-home">
-              BlogAI
-            </a>
+            <motion.a 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="text-2xl font-bold tracking-tight hover-elevate active-elevate-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" 
+              data-testid="link-home"
+            >
+              Quill
+            </motion.a>
           </Link>
 
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/">
-              <a className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover-elevate active-elevate-2 ${
-                location === "/" ? "bg-muted" : ""
-              }`} data-testid="link-home-nav">
-                Home
-              </a>
-            </Link>
-            <Link href="/explore">
-              <a className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover-elevate active-elevate-2 ${
-                location === "/explore" ? "bg-muted" : ""
-              }`} data-testid="link-explore">
-                Explore
-              </a>
-            </Link>
-            <Link href="/dashboard">
-              <a className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover-elevate active-elevate-2 ${
-                location === "/dashboard" ? "bg-muted" : ""
-              }`} data-testid="link-dashboard">
-                Dashboard
-              </a>
-            </Link>
+            {[
+              { path: "/", label: "Home" },
+              { path: "/explore", label: "Explore" },
+              { path: "/dashboard", label: "Dashboard" },
+            ].map((item) => (
+              <Link key={item.path} href={item.path}>
+                <motion.a 
+                  whileHover={{ y: -2 }}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover-elevate active-elevate-2 ${
+                    location === item.path ? "bg-muted" : ""
+                  }`} 
+                  data-testid={`link-${item.label.toLowerCase()}-nav`}
+                >
+                  {item.label}
+                </motion.a>
+              </Link>
+            ))}
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={toggleTheme}
-              data-testid="button-theme-toggle"
-            >
-              {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </Button>
+            <motion.div whileHover={{ rotate: 180 }} transition={{ duration: 0.3 }}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={toggleTheme}
+                data-testid="button-theme-toggle"
+              >
+                {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </Button>
+            </motion.div>
             <Link href="/editor">
-              <Button data-testid="button-new-blog">
+              <Button data-testid="button-new-blog" className="hidden sm:flex">
                 <PenSquare className="h-4 w-4 mr-2" />
-                New Blog
+                Write
               </Button>
             </Link>
             <Link href="/auth">
@@ -84,6 +101,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }

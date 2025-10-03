@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import BlogCard from "@/components/BlogCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
+import AdSensePlaceholder from "@/components/AdSensePlaceholder";
+import { motion } from "framer-motion";
 
 export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,22 +70,40 @@ export default function Explore() {
       
       <div className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-12"
+          >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Explore Blogs</h1>
             <p className="text-muted-foreground text-lg">
               Discover inspiring content from our community
             </p>
-          </div>
+          </motion.div>
 
-          <div className="mb-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-8"
+          >
             <SearchBar onSearch={setSearchQuery} />
-          </div>
+          </motion.div>
 
-          <div className="mb-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
             <CategoryFilter 
               categories={categories}
               onFilterChange={setSelectedCategory}
             />
+          </motion.div>
+
+          <div className="mb-8">
+            <AdSensePlaceholder type="banner" />
           </div>
 
           <div className="space-y-6">
