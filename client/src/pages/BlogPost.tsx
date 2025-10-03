@@ -1,5 +1,6 @@
 import { useRoute } from "wouter";
 import Navbar from "@/components/Navbar";
+import DevHeader from "@/components/DevHeader";
 import Footer from "@/components/Footer";
 import AdSensePlaceholder from "@/components/AdSensePlaceholder";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +60,7 @@ AI content generation is a powerful tool that can significantly improve your wri
   return (
     <div className="min-h-screen">
       <Navbar />
+      <DevHeader />
       
       <article className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

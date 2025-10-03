@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import DevHeader from "@/components/DevHeader";
 import Footer from "@/components/Footer";
 import StatsCard from "@/components/StatsCard";
 import BlogCard from "@/components/BlogCard";
@@ -34,6 +35,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
       <Navbar />
+      <DevHeader />
       
       <div className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

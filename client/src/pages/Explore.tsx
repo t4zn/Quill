@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import DevHeader from "@/components/DevHeader";
 import Footer from "@/components/Footer";
 import BlogCard from "@/components/BlogCard";
 import SearchBar from "@/components/SearchBar";
@@ -67,6 +68,7 @@ export default function Explore() {
   return (
     <div className="min-h-screen">
       <Navbar />
+      <DevHeader />
       
       <div className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

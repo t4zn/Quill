@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import DevHeader from "@/components/DevHeader";
 import Footer from "@/components/Footer";
 import AuthForm from "@/components/AuthForm";
 import ServerStatus from "@/components/ServerStatus";
@@ -7,6 +8,7 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      <DevHeader />
       
       <div className="flex-1 flex items-center justify-center pt-24 pb-16">
         <div className="w-full max-w-md px-4">
