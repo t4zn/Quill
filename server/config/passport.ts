@@ -25,42 +25,42 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/api/auth/google/callback"
   },
-  async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: any) => {
-    try {
-      // Check if user already exists with this Google ID
-      let user = await User.findOne({ 
-        $or: [
-          { googleId: profile.id },
-          { email: profile.emails?.[0]?.value }
-        ]
-      });
+    async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: any) => {
+      try {
+        // Check if user already exists with this Google ID
+        let user = await User.findOne({
+          $or: [
+            { googleId: profile.id },
+            { email: profile.emails?.[0]?.value }
+          ]
+        });
 
-      if (user) {
-        // Update Google ID if not set
-        if (!user.googleId) {
-          user.googleId = profile.id;
-          await user.save();
+        if (user) {
+          // Update Google ID if not set
+          if (!user.googleId) {
+            user.googleId = profile.id;
+            await user.save();
+          }
+          return done(null, user);
         }
-        return done(null, user);
+
+        // Create new user
+        user = new User({
+          googleId: profile.id,
+          username: profile.username || profile.displayName?.replace(/\s+/g, '').toLowerCase() || `user_${profile.id}`,
+          email: profile.emails?.[0]?.value,
+          firstName: profile.name?.givenName,
+          lastName: profile.name?.familyName,
+          avatar: profile.photos?.[0]?.value,
+          isVerified: true
+        });
+
+        await user.save();
+        done(null, user);
+      } catch (error) {
+        done(error, undefined);
       }
-
-      // Create new user
-      user = new User({
-        googleId: profile.id,
-        username: profile.username || profile.displayName?.replace(/\s+/g, '').toLowerCase() || `user_${profile.id}`,
-        email: profile.emails?.[0]?.value,
-        firstName: profile.name?.givenName,
-        lastName: profile.name?.familyName,
-        avatar: profile.photos?.[0]?.value,
-        isVerified: true
-      });
-
-      await user.save();
-      done(null, user);
-    } catch (error) {
-      done(error, undefined);
-    }
-  }));
+    }));
 }
 
 // GitHub OAuth Strategy
@@ -70,42 +70,42 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: "/api/auth/github/callback"
   },
-  async (accessToken: string, refreshToken: string, profile: GitHubProfile, done: any) => {
-    try {
-      // Check if user already exists with this GitHub ID
-      let user = await User.findOne({ 
-        $or: [
-          { githubId: profile.id },
-          { email: profile.emails?.[0]?.value }
-        ]
-      });
+    async (accessToken: string, refreshToken: string, profile: GitHubProfile, done: any) => {
+      try {
+        // Check if user already exists with this GitHub ID
+        let user = await User.findOne({
+          $or: [
+            { githubId: profile.id },
+            { email: profile.emails?.[0]?.value }
+          ]
+        });
 
-      if (user) {
-        // Update GitHub ID if not set
-        if (!user.githubId) {
-          user.githubId = profile.id;
-          await user.save();
+        if (user) {
+          // Update GitHub ID if not set
+          if (!user.githubId) {
+            user.githubId = profile.id;
+            await user.save();
+          }
+          return done(null, user);
         }
-        return done(null, user);
+
+        // Create new user
+        user = new User({
+          githubId: profile.id,
+          username: profile.username || `user_${profile.id}`,
+          email: profile.emails?.[0]?.value,
+          firstName: profile.displayName?.split(' ')[0],
+          lastName: profile.displayName?.split(' ').slice(1).join(' '),
+          avatar: profile.photos?.[0]?.value,
+          isVerified: true
+        });
+
+        await user.save();
+        done(null, user);
+      } catch (error) {
+        done(error, undefined);
       }
-
-      // Create new user
-      user = new User({
-        githubId: profile.id,
-        username: profile.username || `user_${profile.id}`,
-        email: profile.emails?.[0]?.value,
-        firstName: profile.displayName?.split(' ')[0],
-        lastName: profile.displayName?.split(' ').slice(1).join(' '),
-        avatar: profile.photos?.[0]?.value,
-        isVerified: true
-      });
-
-      await user.save();
-      done(null, user);
-    } catch (error) {
-      done(error, undefined);
-    }
-  }));
+    }));
 }
 
 export default passport;
