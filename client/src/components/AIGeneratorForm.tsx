@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -11,19 +11,63 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AIGeneratorForm() {
   const [topic, setTopic] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedContent, setGeneratedContent] = useState<any[]>([]);
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
+  
+  const { token, isAuthenticated } = useAuth();
 
-  const handleGenerate = () => {
-    console.log('Generating', quantity, 'blog(s) about:', topic);
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    
+    if (!isAuthenticated || !token) {
+      setError("Please log in to use AI content generation");
+      return;
+    }
+    
     setIsGenerating(true);
-    setTimeout(() => {
+    setError("");
+    setSuccess("");
+    setGeneratedContent([]);
+
+      const response = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          topic: topic.trim(),
+          quantity: parseInt(quantity)
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate content');
+      }
+
+      if (data.success && data.content) {
+        setGeneratedContent(data.content);
+        setSuccess(`Successfully generated ${data.content.length} blog post${data.content.length > 1 ? 's' : ''}!`);
+        setTopic("");
+      } else {
+        throw new Error('No content generated');
+      }
+    } catch (err: any) {
+      console.error('Generation error:', err);
+      setError(err.message || 'Failed to generate content. Please try again.');
+    } finally {
       setIsGenerating(false);
-      setTopic("");
-    }, 2000);
+    }
   };
 
   return (
@@ -68,7 +112,7 @@ export default function AIGeneratorForm() {
 
           <Button
             onClick={handleGenerate}
-            disabled={!topic || isGenerating}
+            disabled={!topic.trim() || isGenerating}
             className="w-full"
             size="lg"
             data-testid="button-generate"
@@ -85,7 +129,52 @@ export default function AIGeneratorForm() {
               </>
             )}
           </Button>
+
+          {/* Status Messages */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {success && (
+            <Alert>
+              <CheckCircle className="h-4 w-4" />
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
         </div>
+
+        {/* Generated Content Display */}
+        {generatedContent.length > 0 && (
+          <div className="mt-8 space-y-4">
+            <h3 className="text-lg font-semibold">Generated Content</h3>
+            {generatedContent.map((content, index) => (
+              <Card key={content.id || index} className="p-6">
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-lg">{content.title}</h4>
+                  <p className="text-muted-foreground text-sm">{content.excerpt}</p>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span>By {content.author}</span>
+                    <span>{content.readTime}</span>
+                    {content.isAIGenerated && (
+                      <span className="bg-primary/10 text-primary px-2 py-1 rounded">
+                        AI Generated
+                      </span>
+                    )}
+                  </div>
+                  <div className="max-h-32 overflow-y-auto">
+                    <p className="text-sm whitespace-pre-wrap">{content.content.substring(0, 300)}...</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full">
+                    Copy Content
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </Card>
   );

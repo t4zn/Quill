@@ -1,13 +1,22 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, PenSquare } from "lucide-react";
+import { Moon, Sun, PenSquare, User, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
   const [location] = useLocation();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [scrolled, setScrolled] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -36,20 +45,19 @@ export default function Navbar() {
   };
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-lg transition-all ${
-        scrolled ? "shadow-md" : ""
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-lg transition-all ${scrolled ? "shadow-md" : ""
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/">
-            <motion.a 
+            <motion.a
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-2xl font-bold tracking-tight hover-elevate active-elevate-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" 
+              className="text-2xl font-bold tracking-tight hover-elevate active-elevate-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
               data-testid="link-home"
             >
               Quill
@@ -63,11 +71,10 @@ export default function Navbar() {
               { path: "/dashboard", label: "Dashboard" },
             ].map((item) => (
               <Link key={item.path} href={item.path}>
-                <motion.a 
+                <motion.a
                   whileHover={{ y: -2 }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover-elevate active-elevate-2 ${
-                    location === item.path ? "bg-muted" : ""
-                  }`} 
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover-elevate active-elevate-2 ${location === item.path ? "bg-muted" : ""
+                    }`}
                   data-testid={`link-${item.label.toLowerCase()}-nav`}
                 >
                   {item.label}
@@ -87,17 +94,51 @@ export default function Navbar() {
                 {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
             </motion.div>
-            <Link href="/editor">
-              <Button data-testid="button-new-blog" className="hidden sm:flex">
-                <PenSquare className="h-4 w-4 mr-2" />
-                Write
-              </Button>
-            </Link>
-            <Link href="/auth">
-              <Button variant="outline" data-testid="button-login">
-                Sign In
-              </Button>
-            </Link>
+            {isAuthenticated && (
+              <Link href="/editor">
+                <Button data-testid="button-new-blog" className="hidden sm:flex">
+                  <PenSquare className="h-4 w-4 mr-2" />
+                  Write
+                </Button>
+              </Link>
+            )}
+            
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" data-testid="button-user-menu">
+                    <User className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem className="font-medium">
+                    {user?.firstName || user?.username}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLocation("/dashboard")}>
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLocation("/ai-generator")}>
+                    AI Generator
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      logout();
+                      setLocation("/");
+                    }}
+                    className="text-red-600"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/auth">
+                <Button variant="outline" data-testid="button-login">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
