@@ -61,9 +61,10 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen pt-28">
+    <div className="min-h-screen">
       <DevHeader />
-      <Hero />
+      <div className="pt-28">
+        <Hero />
 
       <section className="py-16 md:py-24 bg-gradient-to-b from-card/50 to-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -130,7 +131,8 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -57,10 +57,17 @@ export default function Navbar() {
             <motion.a
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-2xl font-bold tracking-tight hover-elevate active-elevate-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+              className="flex items-center gap-2 text-2xl font-bold tracking-tight hover-elevate active-elevate-2 px-3 py-2 rounded-lg"
               data-testid="link-home"
             >
-              Quill
+              <img 
+                src="/src/favicon.ico" 
+                alt="Quill Logo" 
+                className="w-6 h-6"
+              />
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Quill
+              </span>
             </motion.a>
           </Link>
 
