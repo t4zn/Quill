@@ -3,6 +3,7 @@ dotenv.config();
 
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import connectDB from "./mongodb";
@@ -12,6 +13,16 @@ const app = express();
 
 // Connect to MongoDB
 connectDB();
+
+// CORS configuration
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://blogs.taizun.site', 'https://quill-blog.vercel.app']
+    : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Session configuration
 app.use(session({
