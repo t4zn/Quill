@@ -37,6 +37,7 @@ export default function AIGeneratorForm() {
     setSuccess("");
     setGeneratedContent([]);
 
+    try {
       const response = await fetch('/api/generate-content', {
         method: 'POST',
         headers: {
